@@ -23,6 +23,7 @@ public class EmailEventProducer {
         log.info("Sending email event to Kafka topic : {} for emailId : {}",
                 emailEventsTopic, emailEvent.getEmailId() );
 
+        // kafkaTemplate.send(topic, key, data)
         kafkaTemplate.send(emailEventsTopic,
                 emailEvent.getEmailId().toString(),
                 emailEvent);

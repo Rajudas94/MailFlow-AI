@@ -1,0 +1,31 @@
+# Maven
+target/
+*.class
+*.jar
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Google OAuth - never commit
+**/resources/credentials.json
+tokens/
+
+# Environment secrets
+.env
+*.env
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Spring Boot
+spring-shell.log
+
+
