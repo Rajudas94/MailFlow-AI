@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table (name = " emails ")
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@AllArgsConstructor     // Generates a constructor with all fields as arguments (e.g., public Email(String id, String body))
+@NoArgsConstructor     // Generates an empty, default constructor with no arguments (e.g., public Email())
+@Data                 // This ONE annotation automatically acts as all five below: getter, setter etc.
 
 public class Email {
 
