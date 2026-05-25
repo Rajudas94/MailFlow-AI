@@ -28,7 +28,7 @@ public class GmailConfig {
 
     @Bean
     public Gmail gmailService() throws Exception {
-        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();  // setting up connection path
         Credential credential = getCredentials(httpTransport);
         return new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
