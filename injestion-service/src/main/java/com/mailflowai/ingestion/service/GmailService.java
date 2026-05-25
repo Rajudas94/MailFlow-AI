@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 public class GmailService {
 
-    private final Gmail gmailService;
+    private final Gmail gmailClient;
     private final EmailRepository emailRepository;
 
     @Value("${gmail.user}")
@@ -36,7 +36,7 @@ public class GmailService {
 
         try {
             // Step 1 — Take list of unread mails from Gmail
-            ListMessagesResponse response = gmailService.users()
+            ListMessagesResponse response = gmailClient.users()
                     .messages()
                     .list(gmailUser)
                     .setQ("is:unread")
@@ -59,7 +59,7 @@ public class GmailService {
                 }
 
                 // Step 4 — fetch full message
-                Message fullMessage = gmailService.users()
+                Message fullMessage = gmailClient.users()
                         .messages()
                         .get(gmailUser, gmailMessageId)
                         .setFormat("full")

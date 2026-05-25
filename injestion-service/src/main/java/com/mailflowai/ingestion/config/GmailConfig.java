@@ -27,7 +27,7 @@ public class GmailConfig {
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     @Bean
-    public Gmail gmailService() throws Exception {
+    public Gmail gmailClient() throws Exception {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();  // setting up connection path
         Credential credential = getCredentials(httpTransport);
         return new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
