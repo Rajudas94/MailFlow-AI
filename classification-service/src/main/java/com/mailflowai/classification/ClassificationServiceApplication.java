@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ClassificationServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ClassificationServiceApplication.class, args);
+
+        SpringApplication.run(ClassificationServiceApplication.class, args);
 	}
 
 }

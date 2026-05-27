@@ -19,15 +19,15 @@ public class ClassificationService {
     {
         log.info( "Classifying email : {} subject : {}", emailEvent.getEmailId(),  emailEvent.getSubject() );
 
-        // if already classified
-        if(classificationRepository.existsByEmail(emailEvent.getEmailId()))
+        // check if already classified -> look up in database using repository interface
+        if(classificationRepository.existsByEmailId(emailEvent.getEmailId()))
         {
             log.info("Email already classified : {}", emailEvent.getEmailId());
             return;
         }
 
         // if not classified , call Claude API
-        // place place-holders for now
+        // place "place-holders" for now
         Classification classification = new Classification();
 
         classification.setEmailId(emailEvent.getEmailId());

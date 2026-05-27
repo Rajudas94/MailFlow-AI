@@ -9,5 +9,5 @@ import java.util.UUID;
 public interface ClassificationRepository extends JpaRepository < Classification, UUID > {
 
     Optional < Classification > findByEmailId(UUID emailId);
-    boolean existsByEmail(UUID emailId);
+    boolean existsByEmailId(UUID emailId);
 }

@@ -15,6 +15,7 @@ public class EmailEventConsumer {
 
     private final ClassificationService classificationService;
 
+    // Consume email events from "email-events" topic using a consumer group. The group ID enables offset tracking, ensuring each email is processed exactly once and consumption resumes from the last committed offset after any interruption.
     @KafkaListener( topics = "${kafka.topic.email-events}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeEmailEvent(EmailEvent emailEvent)
     {
@@ -23,6 +24,7 @@ public class EmailEventConsumer {
                 emailEvent.getSubject()
         );
         classificationService.classifyEmail(emailEvent);
+        // call the classify email from the Classification Service
     }
 }
 

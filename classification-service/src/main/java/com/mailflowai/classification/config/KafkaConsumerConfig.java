@@ -27,6 +27,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, EmailEvent> consumerFactory() {
 
+        // JsonDeserializer -> JSON to Email Event
         JsonDeserializer<EmailEvent> deserializer =
                 new JsonDeserializer<>(EmailEvent.class);
 
