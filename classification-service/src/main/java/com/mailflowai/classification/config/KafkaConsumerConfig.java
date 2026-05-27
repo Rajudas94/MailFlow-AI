@@ -31,7 +31,7 @@ public class KafkaConsumerConfig {
                 new JsonDeserializer<>(EmailEvent.class);
 
         deserializer.setRemoveTypeHeaders(false);
-        deserializer.addTrustedPackages("*");
+        deserializer.addTrustedPackages("*");        //  tells the deserializer to trust JSON from any package. Needed because the EmailEvent was serialized by the ingestion service from a different package path.
         deserializer.setUseTypeMapperForKey(true);
 
         Map<String, Object> config = new HashMap<>();
