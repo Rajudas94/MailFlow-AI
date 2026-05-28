@@ -26,3 +26,36 @@
 
 ## Debugging Rule Learned
 Always read the LAST line of the stack trace first — that's where the actual root cause lives, not the top.
+
+## Problem 1 — PropertyReferenceException
+What broke: Classification service crashed on startup with "No property 'email' found for type 'Classification'"
+Why: Spring JPA generates SQL queries by reading method names literally. I wrote existsByEmail() but the entity field was named emailId not email.
+Fix: Renamed to existsByEmailId() to exactly match the entity field name.
+Lesson: Spring JPA method names must exactly match entity field names. existsByEmailId → WHERE email_id = ?. One character wrong and it fails.
+
+
+
+
+## Problem 2 — ClassNotFoundException
+What broke: Classification service threw Class not found [com.mailflowai.ingestion.dto.EmailEvent]
+Why: When Ingestion Service sends a message to Kafka it stamps a type header on it saying "this JSON belongs to com.mailflowai.ingestion.dto.EmailEvent". Classification Service tried to find that exact class — but it doesn't exist there. Classification Service has its own EmailEvent at com.mailflowai.classification.dto.EmailEvent.
+
+Fix: Added these to application.properties:
+spring.kafka.consumer.properties.spring.json.use.type.headers=false
+spring.kafka.consumer.properties.spring.json.value.default.type=com.mailflowai.classification.dto.EmailEvent
+
+And in KafkaConsumerConfig.java:
+config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.mailflowai.classification.dto.EmailEvent");
+
+This tells the deserializer — ignore whatever class name the message claims to be. Just deserialize the JSON into my own EmailEvent class.
+Lesson: When services share DTOs through Kafka, each service serializes with its own package path. The receiving service must either use a shared module or ignore type headers and deserialize into its own class.
+
+
+## Problem 3 — "Already Processed" confusion
+What broke: Ingestion service kept saying "Email already processed" even after deleting database entries.
+Why: Two things happening simultaneously that confused the situation. First — the delete wasn't actually clearing the table properly. Second — once emails were saved, the 60-second scheduler would run again and correctly skip already-saved emails. This is the duplicate prevention logic working as designed.
+Fix: Properly cleared the table with DELETE FROM emails confirmed with SELECT COUNT(*). Then restarted the service fresh so it re-fetched from Gmail.
+Lesson: "Already processed" is not a bug — it's the existsByGmailMessageId check protecting against duplicates. The scheduler runs every 60 seconds and will always skip emails it has already saved. This is correct behavior.
+
+

@@ -11,12 +11,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmailEvent {
 
+    private UUID emailId;
     private String senderName;
     private String senderEmail;
     private String subject;
-    private LocalDateTime receivedAt;
     private String body;
-    private UUID emailId;
     private String gmailMessageId;
     private String status;
+    private LocalDateTime receivedAt;
 }
