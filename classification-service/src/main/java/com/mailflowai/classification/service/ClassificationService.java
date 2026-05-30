@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class ClassificationService {
 
     private final ClassificationRepository classificationRepository;
+    private final ClaudeApiService claudeApiService;
 
     public void classifyEmail(EmailEvent emailEvent)
     {
@@ -26,20 +27,23 @@ public class ClassificationService {
             return;
         }
 
+        // Call Claude API
+        String category = claudeApiService.classifyEmail(emailEvent.getSubject(), emailEvent.getBody());
+
         // if not classified , call Claude API
         // place "place-holders" for now
         Classification classification = new Classification();
 
         classification.setEmailId(emailEvent.getEmailId());
-        classification.setCategory("Pending");
-        classification.setConfidenceScore(0.0);
-        classification.setReasoning("Awaiting Claude API Integration");
+        classification.setCategory(category);
+        classification.setConfidenceScore(0.95);
+        classification.setReasoning("Classified by Ollama");
         classification.setClassifiedAt(LocalDateTime.now());
-        classification.setModelUsed("None");
+        classification.setModelUsed("llama3.2");
 
         classificationRepository.save(classification);
 
-        log.info("Saved placeholder classification for emailId : {}", emailEvent.getEmailId());
+        log.info("Classified email {} as : {}", emailEvent.getEmailId(), category);
 
     }
 }
