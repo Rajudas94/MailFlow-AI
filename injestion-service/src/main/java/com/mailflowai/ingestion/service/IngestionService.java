@@ -17,7 +17,7 @@ public class IngestionService {
     private final GmailService gmailService;
     private final EmailEventProducer emailEventProducer;
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 120000)
     public void pollEmails() {
 
         log.info("Polling Gmail for new emails...");

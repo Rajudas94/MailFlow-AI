@@ -82,6 +82,7 @@ public class GmailService {
                 email.setReceivedAt(receivedAt);
                 email.setStatus("NEW");
 
+                // save the record from repository
                 Email savedEmail = emailRepository.save(email);
                 log.info("Saved email: {} from: {}", gmailMessageId, senderEmail);
 
