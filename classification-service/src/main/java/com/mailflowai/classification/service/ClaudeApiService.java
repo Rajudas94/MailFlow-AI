@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @Slf4j
 public class ClaudeApiService {
 
-    // @Value("${claude.api.key}")
+    //@Value("${claude.api.key}")
     //private String apiKey;
 
     //@Value("${claude.api.model}")
@@ -38,7 +38,7 @@ public class ClaudeApiService {
             log.info("Sending request to Ollama for subject : {}", subject);
             log.info("Request JSON : {}", requestJson);
 
-            // connection request headers -> content type, api key, anthropic version
+            // connection request headers -> content type, api key, ollama version
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -96,6 +96,7 @@ public class ClaudeApiService {
             if (text.contains("LEAD")) return "LEAD";
             if (text.contains("SUPPORT")) return "SUPPORT";
             if (text.contains("SPAM")) return "SPAM";
+
             return "OTHER";
 
         } catch (Exception e) {
