@@ -30,14 +30,13 @@ public class ClassificationService {
             return;
         }
 
-        // Call Claude API
+        // Call claudeApiService, created inside the service folder and imported
         String category = claudeApiService.classifyEmail(emailEvent.getSubject(), emailEvent.getBody());
 
-        // if not classified , call Claude API
-        // place "place-holders" for now
+        // Creating classification database object
         Classification classification = new Classification();
 
-        // this lines are WRITING updated data from claude API to the database
+        // these lines are WRITING updated data from claude API response to the database
         classification.setEmailId(emailEvent.getEmailId());
         classification.setCategory(category);
         classification.setConfidenceScore(0.95);
@@ -45,6 +44,7 @@ public class ClassificationService {
         classification.setClassifiedAt(LocalDateTime.now());
         classification.setModelUsed("llama3.2");
 
+        // saving email records to database permanently through  classificationRepository (JPA)
         classificationRepository.save(classification);
 
         log.info("Classified email {} as : {}", emailEvent.getEmailId(), category);
