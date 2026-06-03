@@ -25,7 +25,8 @@ public class ClaudeApiService {
 
     public String classifyEmail(String subject, String body) {
         try {
-            String prompt = buildClassificationPrompt(subject, body);   //get the prompt
+            // get the prompt
+            String prompt = buildClassificationPrompt(subject, body);
 
             // Build request JSON manually
             ObjectNode requestNode = objectMapper.createObjectNode();
