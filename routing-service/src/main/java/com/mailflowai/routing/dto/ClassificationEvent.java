@@ -1,6 +1,6 @@
-// emails getting classified and published to kafka broker
-package com.mailflowai.classification.dto;
+// getting published event from kafka
 
+package com.mailflowai.routing.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class ClassificationEvent {
 
     private UUID emailId;
@@ -21,3 +20,4 @@ public class ClassificationEvent {
     private String subject;
     private String GmailMessageId;
 }
+

@@ -1,3 +1,4 @@
+// Coming from Ingestion service
 package com.mailflowai.classification.dto;
 
 import lombok.Data;
