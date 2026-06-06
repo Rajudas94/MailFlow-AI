@@ -19,12 +19,12 @@ public class RoutingController {
     private final RoutingService routingService;
 
     @PostMapping("/test")
-    public ResponseEntity < String > testRouting(@RequestBody ClassificationEvent emailEvent)
+    public ResponseEntity < String > testRouting(@RequestBody ClassificationEvent classificationEvent)
     {
-        log.info("Manual routing test triggered for subject : {}", emailEvent.getSubject());
-        routingService.routeEmail(emailEvent);
+        log.info("Manual routing test triggered for subject : {}", classificationEvent.getSubject());
+        routingService.routeEmail(classificationEvent);
 
-        return ResponseEntity.ok("Routing triggered for : " + emailEvent.getSubject() );
+        return ResponseEntity.ok("Routing triggered for : " + classificationEvent.getSubject() );
     }
 
     // for verifying if the Service is working or not
