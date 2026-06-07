@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Routing {
 
-    @id
+    @Id
     @GeneratedValue (strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
