@@ -59,3 +59,31 @@ Fix: Properly cleared the table with DELETE FROM emails confirmed with SELECT CO
 Lesson: "Already processed" is not a bug — it's the existsByGmailMessageId check protecting against duplicates. The scheduler runs every 60 seconds and will always skip emails it has already saved. This is correct behavior.
 
 
+
+17/6/26
+Kafka Consumer error. In the Kafka consumer config file, 
+the consumer was trying to deserialize EmailEvent, but that's not 
+the event it was supposed to listen to — it was supposed to listen 
+to ClassificationEvent from Classification Service. So I changed 
+the consumer to listen to ClassificationEvent.
+
+Then the error still showed up — why? Because in the Kafka config 
+of Routing Service, it was trying to deserialize the event using 
+the package path declared in Classification Service's DTO. Changed 
+it to Routing Service's own DTO package, and updated 
+application.properties as well.
+
+Problem: ClassNotFoundException — com.mailflowai.classification.dto.ClassificationEvent
+Cause: Copy-pasted KafkaConsumerConfig from Classification Service. 
+       Fixed the class name (EmailEvent → ClassificationEvent) but 
+       forgot the package path was still "classification" instead 
+       of "routing" — the service's own package.
+Fix: Changed VALUE_DEFAULT_TYPE to com.mailflowai.routing.dto.ClassificationEvent
+Lesson: When copy-pasting config between services, check BOTH the 
+        package path AND the class name. Easy to fix one and miss 
+        the other since they look similar at a glance.
+
+17/6/26
+        
+
+

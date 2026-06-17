@@ -35,7 +35,7 @@ public class KafkaConsumerConfig {
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.mailflowai.classification.dto.EmailEvent");
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.mailflowai.routing.dto.ClassificationEvent");
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
