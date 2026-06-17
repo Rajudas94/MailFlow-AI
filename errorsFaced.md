@@ -58,6 +58,8 @@ Why: Two things happening simultaneously that confused the situation. First — 
 Fix: Properly cleared the table with DELETE FROM emails confirmed with SELECT COUNT(*). Then restarted the service fresh so it re-fetched from Gmail.
 Lesson: "Already processed" is not a bug — it's the existsByGmailMessageId check protecting against duplicates. The scheduler runs every 60 seconds and will always skip emails it has already saved. This is correct behavior.
 
+5/6/26
+When running injestion service if the tokens get expired , delete the tokens folder from injestion service 
 
 
 17/6/26
