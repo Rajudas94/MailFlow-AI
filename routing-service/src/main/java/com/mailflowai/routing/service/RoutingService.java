@@ -6,6 +6,7 @@ import com.mailflowai.routing.model.Routing;
 import com.mailflowai.routing.repository.QueueRepository;
 import com.mailflowai.routing.repository.RoutingRepository;
 import com.mailflowai.routing.kafka.RoutingEventProducer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class RoutingService {
 
     QueueRepository queueRepository;
@@ -61,7 +63,7 @@ public class RoutingService {
         routingRepository.save(routing);
     }
 
-    // Helper Functions
+    // Helper Function
     String getPriority(String category)
     {
         return switch (category) {

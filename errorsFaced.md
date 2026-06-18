@@ -62,7 +62,7 @@ Lesson: "Already processed" is not a bug — it's the existsByGmailMessageId che
 When running injestion service if the tokens get expired , delete the tokens folder from injestion service 
 
 
-17/6/26
+17/6/26 - START
 Kafka Consumer error. In the Kafka consumer config file, 
 the consumer was trying to deserialize EmailEvent, but that's not 
 the event it was supposed to listen to — it was supposed to listen 
@@ -85,7 +85,41 @@ Lesson: When copy-pasting config between services, check BOTH the
         package path AND the class name. Easy to fix one and miss 
         the other since they look similar at a glance.
 
-17/6/26
-        
+17/6/26 - END
 
 
+
+18/6/26
+Missing @RequiredArgsConstructor in Routing Service File
+
+Error Faced:
+NullPointerException: Cannot invoke 
+"RoutingRepository.existsByEmailId(UUID)" because 
+"this.routingRepository" is null
+
+Why It Happened:
+RoutingService had fields like routingRepository but no 
+constructor was defined anywhere in the class, since I forgot 
+@RequiredArgsConstructor. Without it, Java only has the default 
+empty constructor. Spring used that empty constructor to create 
+the object, so routingRepository was never set — it stayed null.
+
+How I Solved It:
+Added @RequiredArgsConstructor on the RoutingService class. 
+Lombok then generated a constructor that takes routingRepository, 
+queueRepository, and routingEventProducer as parameters. Spring 
+saw this constructor, found the matching beans already created 
+in its container, and injected them automatically.
+
+Lesson Learned:
+A class with final fields needs a constructor that accepts those 
+fields — otherwise dependency injection has nothing to inject 
+into. @RequiredArgsConstructor is not optional decoration, it's 
+what makes constructor injection actually work. Always check that 
+every @Service or @Component class that uses final fields also 
+has either @RequiredArgsConstructor or a manually written 
+constructor. Missing it causes a silent NullPointerException 
+that only shows up at runtime, not at compile time — which makes 
+it sneaky to catch early.
+
+18/6/26 - END
