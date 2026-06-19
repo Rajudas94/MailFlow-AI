@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class RoutingService {
 
     QueueRepository queueRepository;
@@ -52,7 +52,8 @@ public class RoutingService {
 
         Queue queue = queueOptional.orElse(null); // ???
 
-        // 4. Write in routing Database
+        // 4. Write in routing Database (temporary log entry)
+        log.info("Writing data to Routing DB fields for email {}", classificationEvent.getEmailId());
         Routing routing = new Routing();
         routing.setEmailId(classificationEvent.getEmailId());
         routing.setQueueId(queue != null ? queue.getId() : null);
