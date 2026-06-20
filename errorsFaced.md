@@ -166,5 +166,16 @@ injection is final. Compile-time success does not mean
 runtime success — null pointer bugs from missing dependency 
 injection only show up when the code actually runs.
 
-20/6/26
+----------------------------------------------------------------
+
+20/6/26 — Full pipeline confirmed working end to end. 
+Gmail → Ingestion → Kafka → Classification (Ollama) → Kafka 
+→ Routing → PostgreSQL routings table populated with 7 real rows.
+
+Noticed: Ollama occasionally fails with 500 error when system 
+RAM is low (needs 2.3GB, only 1.2GB free). Falls back to OTHER 
+category correctly instead of crashing — error handling worked 
+as designed.
+
+----------------------------------------------------------------
 
