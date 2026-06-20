@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface ClassificationRepository extends JpaRepository < Classification, UUID > {
 
     Optional < Classification > findByEmailId(UUID emailId);

@@ -33,9 +33,6 @@ Why: Spring JPA generates SQL queries by reading method names literally. I wrote
 Fix: Renamed to existsByEmailId() to exactly match the entity field name.
 Lesson: Spring JPA method names must exactly match entity field names. existsByEmailId → WHERE email_id = ?. One character wrong and it fails.
 
-
-
-
 ## Problem 2 — ClassNotFoundException
 What broke: Classification service threw Class not found [com.mailflowai.ingestion.dto.EmailEvent]
 Why: When Ingestion Service sends a message to Kafka it stamps a type header on it saying "this JSON belongs to com.mailflowai.ingestion.dto.EmailEvent". Classification Service tried to find that exact class — but it doesn't exist there. Classification Service has its own EmailEvent at com.mailflowai.classification.dto.EmailEvent.
@@ -51,6 +48,7 @@ config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "com.mailflowai.classification.d
 This tells the deserializer — ignore whatever class name the message claims to be. Just deserialize the JSON into my own EmailEvent class.
 Lesson: When services share DTOs through Kafka, each service serializes with its own package path. The receiving service must either use a shared module or ignore type headers and deserialize into its own class.
 
+---------------------------------------------------------------
 
 ## Problem 3 — "Already Processed" confusion
 What broke: Ingestion service kept saying "Email already processed" even after deleting database entries.
@@ -58,11 +56,14 @@ Why: Two things happening simultaneously that confused the situation. First — 
 Fix: Properly cleared the table with DELETE FROM emails confirmed with SELECT COUNT(*). Then restarted the service fresh so it re-fetched from Gmail.
 Lesson: "Already processed" is not a bug — it's the existsByGmailMessageId check protecting against duplicates. The scheduler runs every 60 seconds and will always skip emails it has already saved. This is correct behavior.
 
+---------------------------------------------------------------
+
 5/6/26
 When running injestion service if the tokens get expired , delete the tokens folder from injestion service 
 
+--------------------------------------------------------------
 
-17/6/26 - START
+17/6/26
 Kafka Consumer error. In the Kafka consumer config file, 
 the consumer was trying to deserialize EmailEvent, but that's not 
 the event it was supposed to listen to — it was supposed to listen 
@@ -85,9 +86,9 @@ Lesson: When copy-pasting config between services, check BOTH the
         package path AND the class name. Easy to fix one and miss 
         the other since they look similar at a glance.
 
-17/6/26 - END
+17/6/26
 
-
+---------------------------------------------------------------
 
 18/6/26
 Missing @RequiredArgsConstructor in Routing Service File
@@ -122,4 +123,48 @@ constructor. Missing it causes a silent NullPointerException
 that only shows up at runtime, not at compile time — which makes 
 it sneaky to catch early.
 
-18/6/26 - END
+--------------------------------------------------------------
+
+20/6/26
+Routing Service Saving Nothing to Database — Fields Not Final
+
+Error Faced:
+RoutingService logs showed "Received classified email event" 
+and "Routing Email" printing correctly, but nothing ever got 
+saved to the routings table. No exception was visible in the 
+normal logs.
+
+Why It Happened:
+Two mistakes stacked on top of each other. First, I had completely 
+forgotten to add @RequiredArgsConstructor on the RoutingService 
+class. Second, even after adding it, I had declared 
+routingRepository, queueRepository, and routingEventProducer as 
+just "private" instead of "private final". 
+
+@RequiredArgsConstructor only generates constructor parameters 
+for fields marked final. Since none of my fields were final, 
+Lombok generated an empty constructor with nothing in it. Spring 
+used that empty constructor to create RoutingService, so all 
+three fields stayed null. Every time routeEmail() ran, it crashed 
+internally trying to call methods on a null repository, but the 
+crash was hidden inside Kafka's retry and error handling, so it 
+never showed up unless I went searching deep in the logs for 
+"Caused by".
+
+How I Solved It:
+Added @RequiredArgsConstructor to the class, then changed all 
+three fields from "private" to "private final". Did a clean 
+rebuild with "./mvnw clean spring-boot:run" to make sure no old 
+compiled version was still running.
+
+Lesson Learned:
+@RequiredArgsConstructor is only half the fix — the fields it 
+injects into must also be declared final. Missing either one 
+causes the exact same silent null dependency bug. Always check 
+both: the annotation is present AND every field meant for 
+injection is final. Compile-time success does not mean 
+runtime success — null pointer bugs from missing dependency 
+injection only show up when the code actually runs.
+
+20/6/26
+

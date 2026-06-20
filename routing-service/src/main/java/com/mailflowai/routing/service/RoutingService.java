@@ -18,9 +18,9 @@ import java.util.Optional;
 @Slf4j
 public class RoutingService {
 
-    QueueRepository queueRepository;
-    RoutingRepository routingRepository;
-    RoutingEventProducer routingEventProducer;
+    private final QueueRepository queueRepository;
+    private final RoutingRepository routingRepository;
+    private final RoutingEventProducer routingEventProducer;
 
     public void routeEmail(ClassificationEvent classificationEvent)
     {
