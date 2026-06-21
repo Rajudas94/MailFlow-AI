@@ -1,6 +1,7 @@
 package com.mailflowai.routing.service;
 
 import com.mailflowai.routing.dto.ClassificationEvent;
+import com.mailflowai.routing.dto.RoutingEvent;
 import com.mailflowai.routing.model.Queue;
 import com.mailflowai.routing.model.Routing;
 import com.mailflowai.routing.repository.QueueRepository;
@@ -62,6 +63,21 @@ public class RoutingService {
 
         // Save the records permanently to Routing Database
         routingRepository.save(routing);
+
+        // for publishing the routing event back to kafka
+        RoutingEvent routingEvent = new RoutingEvent();
+
+        routingEvent.setEmailId(classificationEvent.getEmailId());
+        routingEvent.setGmailMessageId(classificationEvent.getGmailMessageId());
+        routingEvent.setSenderEmail(classificationEvent.getSenderEmail());
+        routingEvent.setSenderName(classificationEvent.getSenderName());
+        routingEvent.setSubject(classificationEvent.getSubject());
+        routingEvent.setCategory(classificationEvent.getCategory());
+        routingEvent.setQueueName(queue != null ? queue.getName() : "General Queue");
+        routingEvent.setPriority(priority);
+        routingEvent.setRoutedAt(LocalDateTime.now());
+
+        routingEventProducer.sendRoutingEvent(routingEvent);
     }
 
     // Helper Function

@@ -22,7 +22,7 @@ public class RoutingEventProducer {
     @Value( "${kafka.topic.routing-events}" )
     private String routingEmailsTopic;
 
-    public void sendClassificationEmail(RoutingEvent event)
+    public void sendRoutingEvent(RoutingEvent event)
     {
         // show in log that email is send to the designation topic
         log.info("Sending Routing event to kafka topic : {} for emailId : {}",
