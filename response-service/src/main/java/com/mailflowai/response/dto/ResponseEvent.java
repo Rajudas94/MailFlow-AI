@@ -1,15 +1,15 @@
 package com.mailflowai.response.dto;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ResponseEvent {
 
     private UUID emailId;
