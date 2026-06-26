@@ -172,7 +172,11 @@ injection only show up when the code actually runs.
 Gmail → Ingestion → Kafka → Classification (Ollama) → Kafka 
 → Routing → PostgreSQL routings table populated with 7 real rows.
 
-Noticed: Ollama occasionally fails with 500 error when system 
+26/6/26 : Full pipeline confirmed working end to end after adding response service
+Gmail ➤ Ingestion Service ➤ Kakfa ➤ Classification Service (with Ollama) ➤ Kafka ➤ Routing Service ➤ kafka ➤ Response Service 
+(Each service saves the records of their incoming events to PostgreSQL) 
+
+Noticed: For above two pipeline tests, Ollama occasionally fails with 500 error when system 
 RAM is low (needs 2.3GB, only 1.2GB free). Falls back to OTHER 
 category correctly instead of crashing — error handling worked 
 as designed.
