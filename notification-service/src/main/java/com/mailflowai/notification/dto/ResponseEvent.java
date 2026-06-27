@@ -1,4 +1,4 @@
-package com.mailflowai.response.dto;
+package com.mailflowai.notification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,3 +20,4 @@ public class ResponseEvent {
     private String approvalStatus;
     private LocalDateTime generatedAt;
 }
+
