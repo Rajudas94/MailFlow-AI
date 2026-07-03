@@ -1,0 +1,49 @@
+version : '3.8'
+
+services :
+    
+    # Postgres Configuration
+    postgres :
+        
+        image: postgres:16
+        container_name: mailflow-postgres
+        
+        environment:
+            
+            POSTGRES_DB: mailflow_ai
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: @RDrules94
+            
+        ports:
+            - "5432:5432"
+            
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            
+        networks:
+            - mailflow-networks
+            
+    # Ingestion Service
+    ingestion-service:
+        
+        image: mailflow-ingestion:latest
+        container_name: mailflow-ingestion 
+        ports:
+            - "8081 : 8081"
+            
+        environment:
+            SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mailflow_ai
+            SPRING_DATASOURCE_USERNAME: postgres
+            SPRING_DATASOURCE_PASSWORD: @RDrules94
+            SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+            
+        depends_on:
+            - postgres
+            
+        networks:
+            - mailflow-networks
+            
+            
+        
+            
+            
