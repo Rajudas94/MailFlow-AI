@@ -9,6 +9,7 @@ services :
         container_name: mailflow-postgres
         
         environment:
+            
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -20,18 +21,43 @@ services :
             - postgres_data:/var/lib/postgresql/data
             
         networks:
-            - mailflow-networks
-            
+            - mailflow-network
+    
+    # Kafka -------------------------------------------------
+    
+    kafka:
+        
+        image: apache/kafka:3.9.0
+        container_name: mailflow-kafka
+        
+        environment:
+          KAFKA_NODE_ID: 1
+          KAFKA_PROCESS_ROLES: broker,controller
+          KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+          KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+          KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+          KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+        
+        ports:
+          - "9092:9092"
+        
+        networks:
+          - mailflow-network
+
+    # ------------------------------------------------------
+    
     # Ingestion Service
     ingestion-service:
         
         image: mailflow-ingestion:latest
         container_name: mailflow-ingestion 
         ports:
-            - "8081 : 8081"
+            - "8081:8081"
             
         environment:
-        
             SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
             SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
             SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
@@ -39,10 +65,12 @@ services :
             
         depends_on:
             - postgres
+            - kafka
             
         networks:
-            - mailflow-networks
+            - mailflow-network
             
+    # ------------------------------------------------------        
     # Classification Service
     classification-service:
     
@@ -50,7 +78,7 @@ services :
         container_name: mailflow-classification
         
         ports:
-            - "8082 : 8082"
+            - "8082:8082"
         
         environment:
         
@@ -60,8 +88,9 @@ services :
             SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             OLLAMA_API_URL: http://host.docker.internal:11434/api/generate
             
-        depends-on:
+        depends_on:
             - postgres
+            - kafka
             
         extra_hosts:
             - "host.docker.internal:host-gateway"
@@ -69,6 +98,7 @@ services :
         networks:
             - mailflow-network
             
+    # ------------------------------------------------------        
     # Routing Service
     routing-service:
         
@@ -76,7 +106,7 @@ services :
         container_name: mailflow-routing
         
         ports:
-            - "8083 : 8083"
+            - "8083:8083"
         
         environment:
 
@@ -85,13 +115,14 @@ services :
             SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
             SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             
-        depends-on:
+        depends_on:
             - postgres
+            - kafka
             
         networks:
             - mailflow-network
         
-        
+    # ------------------------------------------------------    
     # Response Service
     response-service:
     
@@ -99,7 +130,7 @@ services :
         container_name: mailflow-response
         
         ports:
-            - "8084 : 8084"
+            - "8084:8084"
         
         environment:
         
@@ -109,24 +140,25 @@ services :
             SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             OLLAMA_API_URL: http://host.docker.internal:11434/api/generate
             
-        depends-on:
+        depends_on:
             - postgres
+            - kafka
             
         extra_hosts:
             - "host.docker.internal:host-gateway"
             
         networks:
             - mailflow-network
-            
     
-    #Notification service
+    # -------------------------------------------------------        
+    # Notification service
     notification-service:
     
         image: mailflow-notification:latest
         container_name: mailflow-notification
         
         ports:
-            - "8085 : 8085"
+            - "8085:8085"
         
         environment:
 
@@ -135,17 +167,32 @@ services :
             SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
             SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
             
-        depends-on:
+        depends_on:
             - postgres
+            - kafka
             
         networks:
             - mailflow-network
             
-            
-    networks:
-        mailflow-network:
-            driver: bridge        
+# -------------------------------------------------------------
+networks:
+    mailflow-network:
+        driver: bridge        
     
-    volumes:
-        postgres_data:
+# -------------------------------------------------------------
+volumes:
+    postgres_data:
+    
+        
+            
+            
+            
+            
+        
+
+            
+            
+            
+    
+        
     
