@@ -186,3 +186,100 @@ Noticed: For above three pipeline tests, Ollama occasionally fails with 500 erro
 
 ----------------------------------------------------------------
 
+Docker errors
+
+
+4/7/26
+# PostgreSQL Container Failed to Start (Port 5432 Already in Use)
+
+## What Happened
+While starting the MailFlow project using:
+
+```bash
+docker compose up
+```
+
+Docker failed to start the PostgreSQL container.
+
+---
+
+## Error Message
+
+```text
+ERROR: failed to bind host port 0.0.0.0:5432/tcp:
+address already in use
+```
+
+---
+
+## Why It Happened
+
+The PostgreSQL container was configured to expose port **5432** on the host machine.
+
+However, another PostgreSQL instance was already running locally and listening on the same port.
+
+Since only one process can bind to a host port at a time, Docker could not start the PostgreSQL container.
+
+---
+
+## Investigation
+
+- Verified the Docker Compose logs.
+- Confirmed the failure occurred while binding host port **5432**.
+- Identified that a local PostgreSQL service was already running and occupying the port.
+
+---
+
+## Action Taken
+
+1. Stopped the local PostgreSQL service.
+2. Restarted Docker Compose.
+
+```bash
+sudo service postgresql stop
+
+docker compose up
+```
+
+---
+
+## Result
+
+- ✅ PostgreSQL container started successfully.
+- ✅ Database initialized correctly.
+- ✅ Spring Boot services connected to the database.
+- ✅ Hibernate created the required tables.
+- ✅ MailFlow services continued startup successfully.
+
+---
+
+## Key Learning
+
+Docker port mapping follows the format:
+
+```
+HOST_PORT:CONTAINER_PORT
+```
+
+If the **host port** is already occupied by another application, Docker cannot bind the container to that port. Before exposing a port, always ensure it is available or use a different host port.
+
+---
+
+5/7/26
+
+errors faced :
+Couldn't resolve server kafka:9092 from bootstrap.servers as DNS resolution failed for kafka
+No resolvable bootstrap urls given in bootstrap.servers
+
+mailflow-kafka exited with code 1
+advertised.listeners cannot use the nonroutable meta-address 0.0.0.0
+
+why it happened
+
+
+How i solved
+
+
+result
+
+
