@@ -265,21 +265,23 @@ If the **host port** is already occupied by another application, Docker cannot b
 
 ---
 
-5/7/26
+Started on 5/7/26
 
 errors faced :
-Couldn't resolve server kafka:9092 from bootstrap.servers as DNS resolution failed for kafka
-No resolvable bootstrap urls given in bootstrap.servers
-
 mailflow-kafka exited with code 1
 advertised.listeners cannot use the nonroutable meta-address 0.0.0.0
 
-why it happened
-
+why it happened:
+The initial setup used the official Apache Kafka 3.9 Docker image in KRaft mode. Although the listeners and advertised listeners appeared to be configured correctly, Kafka treated the non-routable bind address (0.0.0.0) as part of the advertised listener configuration during startup validation, causing the broker to terminate.
 
 How i solved
+After investigating the issue and attempting multiple configuration fixes, I switched from the official Apache Kafka Docker image (apache/kafka:3.9.0) to the Confluent Kafka image, which provides a Docker-friendly KRaft setup and handled the listener configuration correctly without additional changes.
 
+result:
+The Kafka broker started successfully without any advertised listener errors. All MailFlow AI microservices, PostgreSQL, and Kafka containers came up successfully through Docker Compose, and the complete event-driven pipeline was able to run inside the Docker network.
 
-result
+Screenshots taken on 8/7/26 at 21:30
+
+Ended on 8/7/26
 
 
