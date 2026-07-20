@@ -284,4 +284,18 @@ Screenshots taken on 8/7/26 at 21:30
 
 Ended on 8/7/26
 
+Faced on 20/7/26
 
+What Broke
+During the Gmail OAuth authentication flow, Google successfully authenticated the user, but the authorization callback failed to reach the backend service. The browser displayed a "localhost refused to connect" error, preventing the application from completing the OAuth flow.
+
+Why It Happened
+The Spring Boot application was running inside a Docker container and listening on port 8888, but that port was not exposed in the docker-compose.yml file. As a result, the host machine could not forward the OAuth callback request to the application running inside the container.
+
+Solution Implemented
+Exposed port 8888 in the Docker Compose configuration by adding the appropriate port mapping between the host and the backend container, allowing external requests to reach the OAuth callback endpoint.
+
+Result
+The OAuth callback was successfully received by the backend service, Gmail authorization completed successfully, and the application resumed normal execution without any connection errors.
+
+ended on 20/7/26
