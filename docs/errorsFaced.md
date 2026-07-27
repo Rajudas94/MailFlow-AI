@@ -299,3 +299,12 @@ Result
 The OAuth callback was successfully received by the backend service, Gmail authorization completed successfully, and the application resumed normal execution without any connection errors.
 
 ended on 20/7/26
+
+21/7/26
+Error : Container running successfully but stopped at response service
+
+why it happened :
+
+Solution :
+
+result :
