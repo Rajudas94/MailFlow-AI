@@ -282,7 +282,7 @@ The Kafka broker started successfully without any advertised listener errors. Al
 
 Screenshots taken on 8/7/26 at 21:30
 
-Ended on 8/7/26
+solved on 8/7/26
 
 Faced on 20/7/26
 
@@ -298,7 +298,7 @@ Exposed port 8888 in the Docker Compose configuration by adding the appropriate 
 Result
 The OAuth callback was successfully received by the backend service, Gmail authorization completed successfully, and the application resumed normal execution without any connection errors.
 
-ended on 20/7/26
+solved on 20/7/26
 
 21/7/26
 Error : Container running successfully but stopped at response service
