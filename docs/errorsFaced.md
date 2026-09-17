@@ -308,3 +308,12 @@ why it happened :
 Solution :
 
 result :
+
+
+17/9/26
+Error : its breaking down in routing service and hence draft replies and audit logs are also breaking with it
+why it happened : ??
+solution : ??
+result : ??
+
+
